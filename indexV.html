@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WTParty Vendor List</title>
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/7/7e/Party_icon.png" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .neon-pink { color: #ff00cc; }
+    .neon-turquoise { color: #00fff2; }
+
+    @keyframes neonPulse {
+      0%, 100% { text-shadow: 0 0 5px #ff00cc, 0 0 15px #00fff2, 0 0 25px #ff00cc; }
+      50% { text-shadow: 0 0 15px #ff00cc, 0 0 30px #00fff2, 0 0 45px #ff00cc; }
+    }
+    .glow { animation: neonPulse 2.5s infinite alternate; }
+
+    @keyframes neonPulseButton {
+      0% { box-shadow: 0 0 10px #ff00cc, 0 0 20px #00fff2; }
+      50% { box-shadow: 0 0 20px #ff00cc, 0 0 40px #00fff2; }
+      100% { box-shadow: 0 0 10px #ff00cc, 0 0 20px #00fff2; }
+    }
+    .pulse { animation: neonPulseButton 1s infinite alternate; }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen px-6 sm:px-8 text-center">
+
+  <div class="max-w-md w-full">
+    <h1 class="text-4xl sm:text-5xl font-bold mb-4 glow neon-turquoise">WTParty Vendor List</h1>
+    <p class="text-lg text-gray-300 mb-4 italic">Be where the party happens 🎶</p>
+    <p class="text-sm sm:text-base text-gray-400 mb-8">
+      Connect your brand with the hottest events before anyone else. DJs, food vendors, venues & creators — this is your spotlight.
+    </p>
+
+    <!-- Vendor Form -->
+    <form id="vendor-form" action="https://script.google.com/macros/s/PASTE_YOUR_VENDOR_SCRIPT_URL_HERE/exec"
+          class="space-y-4 bg-black/50 p-6 rounded-2xl border border-teal-400 shadow-lg">
+      <input type="text" name="business" placeholder="Business / Brand Name" required
+             class="w-full px-4 py-2 bg-transparent border border-teal-400 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-teal-300" />
+      <input type="text" name="contact" placeholder="Your Name" required
+             class="w-full px-4 py-2 bg-transparent border border-teal-400 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-teal-300" />
+      <input type="email" name="email" placeholder="Email Address" required
+             class="w-full px-4 py-2 bg-transparent border border-teal-400 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-teal-300" />
+      <input type="text" name="service" placeholder="Type of Service (DJ, Venue, Food, etc.)" required
+             class="w-full px-4 py-2 bg-transparent border border-teal-400 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-teal-300" />
+
+      <button id="vendor-submit" type="submit"
+              class="w-full bg-gradient-to-r from-teal-400 to-pink-500 text-black font-bold py-2 rounded-xl hover:scale-105 transition-transform">
+        Join Vendor List
+      </button>
+    </form>
+
+    <p id="vendor-success" class="hidden text-green-400 mt-6 font-semibold">
+      🎊 You’re on the Vendor List! We’ll contact you when the next event needs your energy.
+    </p>
+
+    <iframe name="hidden_iframe" style="display:none;"></iframe>
+
+    <footer class="mt-12 text-gray-500 text-sm">
+      © 2025 WTParty. All rights reserved.
+    </footer>
+  </div>
+
+  <script>
+    const form = document.getElementById('vendor-form');
+    const submitButton = document.getElementById('vendor-submit');
+    const successMessage = document.getElementById('vendor-success');
+    const iframe = document.getElementsByName('hidden_iframe')[0];
+
+    form.addEventListener('submit', () => {
+      submitButton.disabled = true;
+      submitButton.classList.add('pulse');
+      submitButton.textContent = "Submitting...";
+      successMessage.classList.add('hidden');
+    });
+
+    iframe.onload = () => {
+      if (submitButton.disabled) {
+        successMessage.classList.remove('hidden');
+        submitButton.disabled = false;
+        submitButton.classList.remove('pulse');
+        submitButton.textContent = "Join Vendor List";
+        form.reset();
+      }
+    };
+  </script>
+</body>
+</html>
