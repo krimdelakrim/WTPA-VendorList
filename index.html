@@ -96,8 +96,8 @@
 
     <!-- Footer with neon links -->
     <footer class="mt-12 text-gray-200 text-sm">
-      <a href="TermsOfService.html" class="neon-link">Terms of Service</a> | 
-      <a href="PrivacyPolicy.html" class="neon-link">Privacy Policy</a>
+      <a href="terms-of-service.html" class="neon-link">Terms of Service</a> | 
+      <a href="privacy-policy.html" class="neon-link">Privacy Policy</a>
       <p>© 2025 WTParty. All rights reserved.</p>
     </footer>
   </div>
@@ -106,7 +106,7 @@
     const form = document.getElementById('waitlist-form');
     const submitButton = document.getElementById('submit-button');
     const successMessage = document.getElementById('success-message');
-    const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/1dpkMYKfRDe3rqxUDtvVa07ZmYHFj2ftGlCb9aErc7Kc/exec";
 
     // --- Load saved form state on page load ---
     window.addEventListener('DOMContentLoaded', () => {
@@ -141,7 +141,7 @@
         const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
         if (response.ok) {
           successMessage.classList.remove('hidden');
-          successMessage.textContent = "🎉 You're on the list! We'll notify you when the party s
+          successMessage.textContent = "🎉 You're on the list! We'll notify you when the party's
 
 
 @keyframes neonPulseText {
@@ -198,9 +198,10 @@ a:hover {
       </button>
     </form>
 
-    <p id="success-message" class="mt-6 font-semibold">
-      🎉 You're on the list! We'll notify you when the party starts.
-    </p>
+    <p id="success-message" class="hidden text-green-400 mt-6 font-semibold neon-text">
+  🎉 You're on the list! We'll notify you when the party starts.
+</p>
+
 
     <footer class="mt-12 text-gray-200 text-sm">
       © 2025 WTParty. All rights reserved.
@@ -218,6 +219,23 @@ a:hover {
 
       // Your Apps Script Web App URL
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxdDC5CBRQ0UrISW5Qy9i68CxVDRGalypAmhAcENGlu6cbzsMLkFizpXwNWpF0GPs_9/exec";
+/// LocalStorage form preservation
+      window.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('loaded');
+  const savedData = localStorage.getItem('waitlistForm');
+  if (savedData) {
+    const data = JSON.parse(savedData);
+    Object.keys(data).forEach(key => {
+      if (form.elements[key]) form.elements[key].value = data[key];
+    });
+  }
+});
+
+form.addEventListener('input', () => {
+  const data = {};
+  Array.from(form.elements).forEach(el => { if(el.name) data[el.name] = el.value; });
+  localStorage.setItem('waitlistForm', JSON.stringify(data));
+});
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
