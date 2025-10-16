@@ -64,7 +64,6 @@
     <form id="waitlist-form"
       action="https://script.google.com/macros/s/AKfycbxdDC5CBRQ0UrISW5Qy9i68CxVDRGalypAmhAcENGlu6cbzsMLkFizpXwNWpF0GPs_9/exec"
       method="POST"
-      target="hidden_iframe"
       class="space-y-4 card-bg p-6 rounded-2xl border border-pink-500 shadow-lg">
 
       <input type="text" name="name" placeholder="Your Name" required
@@ -105,30 +104,48 @@
     const form = document.getElementById('waitlist-form');
     const submitButton = document.getElementById('submit-button');
     const successMessage = document.getElementById('success-message');
-    const iframe = document.getElementsByName('hidden_iframe')[0];
+    //Your Apps Script Web App URL
+    const SCRIPT_URL = "https://script.google.co/macros/s/https://script.google.com/macros/s/AKfycbxdDC5CBRQ0UrISW5Qy9i68CxVDRGalypAmhAcENGlu6cbzsMLkFizpXwNWpF0GPs_9/exec"
 
-    form.addEventListener('submit', () => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      //Disable button and show loading state
       submitButton.disabled = true;
-      submitButton.classList.add('pulse');
       submitButton.textContent = "Submitting...";
+      submitButton.classList.add('pulse');
       successMessage.classList.add('hidden');
+
+    //Collect form data
+      const formData = new FormData(form);
+
+      try {
+        //Send POST request to Apps Script
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: formData
     });
 
-  iframe.onload = () => {
-  if (submitButton.disabled) {
+        if (response.ok) {
+          //Show success message
+          successMessage.classList.remove ('hidden');
+          successMessage.textContent = "🎉 You're on the list! We'll notify you when the party starts.";
+          
+        } else {
+          //Handle error response
+          const text = await response.text();
+          successMessage.classList.remove('hidden');
+          successMessage.textContent = "⚠️ Error submitting: " + text;
+        } catch (err) {
+          successMessage.classList.remove('hidden');
+          successMessage.textContent = "⚠️ Network error: " + err.message;
+        }finally {
+          submitButton.disabled = false;
+          submitButton.textContent = "Join the Waitlist";
+          submitButton.classList.remove('pulse');
+      }
+    });
 
-    // Show success message
-    successMessage.classList.remove('hidden');
-    successMessage.textContent = "🎉 You're on the list! We'll notify you when the party starts.";
-    
-    // Re-enable button and reset form
-    submitButton.disabled = false;
-    submitButton.classList.remove('pulse');
-    submitButton.textContent = "Join the Waitlist";
-    // Reset form fields
-    form.reset();
-  }
-};
 
 
     // === Vendor List Logic ===
