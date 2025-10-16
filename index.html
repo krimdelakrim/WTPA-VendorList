@@ -46,6 +46,14 @@
       background: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(6px);
     }
+
+    #success-message {
+      transition: opacity 0.5s ease;
+      opacity: 0;
+    }
+    #success-message.show {
+      opacity: 1;
+    }
   </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen px-6 sm:px-8 text-center">
@@ -70,7 +78,7 @@
       </button>
     </form>
 
-    <p id="success-message" class="hidden text-green-400 mt-6 font-semibold">
+    <p id="success-message" class="text-green-400 mt-6 font-semibold">
       🎉 You're on the list! We'll notify you when the party starts.
     </p>
 
@@ -80,56 +88,54 @@
   </div>
 
   <script>
-    const form = document.getElementById('waitlist-form');
-    const submitButton = document.getElementById('submit-button');
-    const successMessage = document.getElementById('success-message');
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('waitlist-form');
+      const submitButton = document.getElementById('submit-button');
+      const successMessage = document.getElementById('success-message');
 
-    // Replace with your Apps Script Web App URL
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxdDC5CBRQ0UrISW5Qy9i68CxVDRGalypAmhAcENGlu6cbzsMLkFizpXwNWpF0GPs_9/exec";
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      submitButton.disabled = true;
-      submitButton.textContent = "Submitting...";
-      submitButton.classList.add('pulse');
+      // Hide success message initially
       successMessage.classList.add('hidden');
 
-      const formData = new FormData(form);
+      // Your Apps Script Web App URL
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxdDC5CBRQ0UrISW5Qy9i68CxVDRGalypAmhAcENGlu6cbzsMLkFizpXwNWpF0GPs_9/exec";
 
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // stops normal form submission
 
-        if (response.ok) {
+        submitButton.disabled = true;
+        submitButton.textContent = "Submitting...";
+        submitButton.classList.add('pulse');
+        successMessage.classList.add('hidden');
+
+        const formData = new FormData(form);
+
+        try {
+          const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+
+          if (response.ok) {
+            successMessage.classList.remove('hidden');
+            successMessage.classList.add('show');
+            successMessage.textContent = "🎉 You're on the list! We'll notify you when the party starts.";
+            form.reset();
+          } else {
+            const text = await response.text();
+            successMessage.classList.remove('hidden');
+            successMessage.textContent = "⚠️ Error submitting: " + text;
+          }
+
+        } catch (err) {
           successMessage.classList.remove('hidden');
-          successMessage.textContent = "🎉 You're on the list! We'll notify you when the party starts.";
-          form.reset();
-        } else {
-          const text = await response.text();
-          successMessage.classList.remove('hidden');
-          successMessage.textContent = "⚠️ Error submitting: " + text;
+          successMessage.textContent = "⚠️ Network error: " + err.message;
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = "Join the Waitlist";
+          submitButton.classList.remove('pulse');
         }
-
-      } catch (err) {
-        successMessage.classList.remove('hidden');
-        successMessage.textContent = "⚠️ Network error: " + err.message;
-      } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = "Join the Waitlist";
-        submitButton.classList.remove('pulse');
-      }
+      });
     });
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
 
 
 
