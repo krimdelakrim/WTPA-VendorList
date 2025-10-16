@@ -105,46 +105,44 @@
     const submitButton = document.getElementById('submit-button');
     const successMessage = document.getElementById('success-message');
     //Your Apps Script Web App URL
-    const SCRIPT_URL = "https://script.google.co/macros/s/https://script.google.com/macros/s/AKfycbxdDC5CBRQ0UrISW5Qy9i68CxVDRGalypAmhAcENGlu6cbzsMLkFizpXwNWpF0GPs_9/exec"
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxdDC5CBRQ0UrISW5Qy9i68CxVDRGalypAmhAcENGlu6cbzsMLkFizpXwNWpF0GPs_9/exec"
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+   form.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-      //Disable button and show loading state
-      submitButton.disabled = true;
-      submitButton.textContent = "Submitting...";
-      submitButton.classList.add('pulse');
-      successMessage.classList.add('hidden');
+  // Disable button and show loading state
+  submitButton.disabled = true;
+  submitButton.textContent = "Submitting...";
+  submitButton.classList.add('pulse');
+  successMessage.classList.add('hidden');
 
-    //Collect form data
-      const formData = new FormData(form);
+  const formData = new FormData(form);
 
-      try {
-        //Send POST request to Apps Script
-        const response = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: formData
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: formData
     });
 
-        if (response.ok) {
-          //Show success message
-          successMessage.classList.remove ('hidden');
-          successMessage.textContent = "🎉 You're on the list! We'll notify you when the party starts.";
-          
-        } else {
-          //Handle error response
-          const text = await response.text();
-          successMessage.classList.remove('hidden');
-          successMessage.textContent = "⚠️ Error submitting: " + text;
-        } catch (err) {
-          successMessage.classList.remove('hidden');
-          successMessage.textContent = "⚠️ Network error: " + err.message;
-        }finally {
-          submitButton.disabled = false;
-          submitButton.textContent = "Join the Waitlist";
-          submitButton.classList.remove('pulse');
-      }
-    });
+    if (response.ok) {
+      successMessage.classList.remove('hidden');
+      successMessage.textContent = "🎉 You're on the list! We'll notify you when the party starts.";
+      form.reset();
+    } else {
+      const text = await response.text();
+      successMessage.classList.remove('hidden');
+      successMessage.textContent = "⚠️ Error submitting: " + text;
+    }
+
+  } catch (err) {
+    successMessage.classList.remove('hidden');
+    successMessage.textContent = "⚠️ Network error: " + err.message;
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = "Join the Waitlist";
+    submitButton.classList.remove('pulse');
+  }
+});
 
 
 
