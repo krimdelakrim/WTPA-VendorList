@@ -116,15 +116,15 @@
 
   iframe.onload = () => {
   if (submitButton.disabled) {
-    // Re-enable button and reset form
-    submitButton.disabled = false;
-    submitButton.classList.remove('pulse');
-    submitButton.textContent = "Join the Waitlist";
 
     // Show success message
     successMessage.classList.remove('hidden');
     successMessage.textContent = "🎉 You're on the list! We'll notify you when the party starts.";
-
+    
+    // Re-enable button and reset form
+    submitButton.disabled = false;
+    submitButton.classList.remove('pulse');
+    submitButton.textContent = "Join the Waitlist";
     // Reset form fields
     form.reset();
   }
