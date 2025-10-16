@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WTParty Vendor-Waitlist</title>
+  <title>WTParty Vendor Waitlist</title>
   <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/7/7e/Party_icon.png" type="image/png" />
 
   <!-- Tailwind CSS -->
@@ -16,7 +16,11 @@
       background: linear-gradient(135deg, #9D00FF, #ff00cc, #00fff2);
       background-size: 400% 400%;
       animation: pulseBackground 10s ease infinite;
+      opacity: 0;
+      transition: opacity 0.4s ease;
     }
+
+    body.loaded { opacity: 1; }
 
     @keyframes pulseBackground {
       0% { background-position: 0% 50%; }
@@ -24,65 +28,138 @@
       100% { background-position: 0% 50%; }
     }
 
-    /* Neon header glow */
-    .neon-pink { color: #ff00cc; }
-    .glow { 
-      animation: neonPulse 2.5s infinite alternate; 
-    }
-    @keyframes neonPulse {
-      0%, 100% { text-shadow: 0 0 5px #ff00cc, 0 0 15px #00fff2, 0 0 25px #ff00cc; }
-      50% { text-shadow: 0 0 15px #ff00cc, 0 0 30px #00fff2, 0 0 45px #ff00cc; }
+    /* Neon glow for text and inputs */
+    .neon-text {
+      text-shadow: 0 0 5px #00fff2, 0 0 10px #ff00cc;
+      transition: text-shadow 0.3s;
     }
 
-    /* Neon pulse button */
-    .pulse {
-      animation: neonPulseButton 1s infinite alternate;
-    }
-    @keyframes neonPulseButton {
-      0% { box-shadow: 0 0 10px #ff00cc, 0 0 20px #00fff2; }
-      50% { box-shadow: 0 0 20px #ff00cc, 0 0 40px #00fff2; }
-      100% { box-shadow: 0 0 10px #ff00cc, 0 0 20px #00fff2; }
+    .neon-input:focus {
+      box-shadow: 0 0 8px #ff00cc, 0 0 16px #00fff2;
+      border-color: #ff00cc;
+      outline: none;
+      transition: box-shadow 0.3s, border-color 0.3s;
     }
 
-    /* Card background */
+    /* Neon pulsing button */
+    @keyframes pulseButton {
+      0% { box-shadow: 0 0 8px #ff00cc, 0 0 16px #00fff2; }
+      50% { box-shadow: 0 0 16px #ff00cc, 0 0 32px #00fff2; }
+      100% { box-shadow: 0 0 8px #ff00cc, 0 0 16px #00fff2; }
+    }
+
+    .pulse-button.pulse {
+      animation: pulseButton 1.2s infinite alternate;
+    }
+
+    /* Neon link glow */
+    .neon-link {
+      color: #00fff2;
+      text-decoration: none;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+
+    .neon-link:hover {
+      color: #ff00cc;
+      text-shadow: 0 0 5px #ff00cc, 0 0 10px #00fff2;
+    }
+
+    /* Soft translucent card background */
     .card-bg {
       background: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(6px);
     }
+  </style>
+</head>
 
-    /* Success message neon glow */
-    #success-message {
-      transition: opacity 0.5s ease;
-      opacity: 0;
-      color: #00ffcc;
-      text-shadow: 0 0 5px #00ffcc, 0 0 15px #00ffcc, 0 0 25px #00ffcc;
-      font-weight: bold;
-    }
-    #success-message.show {
-      opacity: 1;
-      animation: neonPulseSuccess 2s infinite alternate;
-    }
-    @keyframes neonPulseSuccess {
-      0% { text-shadow: 0 0 5px #00ffcc, 0 0 15px #00ffcc, 0 0 25px #00ffcc; }
-      50% { text-shadow: 0 0 15px #00ffcc, 0 0 30px #00ffcc, 0 0 45px #00ffcc; }
-      100% { text-shadow: 0 0 5px #00ffcc, 0 0 15px #00ffcc, 0 0 25px #00ffcc; }
-    }
+<body class="flex flex-col items-center justify-center min-h-screen px-6 sm:px-8 text-center">
+  <div class="max-w-md w-full">
+    <h1 class="text-4xl sm:text-5xl font-bold mb-4 neon-text">WTParty Vendor Waitlist</h1>
+    <p class="text-lg mb-4 italic font-semibold text-black bg-white/60 px-3 py-1 rounded-xl shadow-md">
+      Where vendors meet the crowd — and the crowd meets the vibe.
+    </p>
 
-    /* Checkbox link styles */
-    label[for="consent"] {
-      color: #ffffff;
-      font-size: 0.875rem;
-      line-height: 1.25rem;
-    }
-    label[for="consent"] a {
-      color: #00ffcc;
-      text-decoration: underline;
-      transition: color 0.3s, text-shadow 0.3s;
-    }
-    label[for="consent"] a:hover {
-      color: #ff00cc;
-      text-shadow: 0 0 5px #ff00cc, 0 0 15px #00ffcc, 0 0 25px #ff00cc;
-    }
+    <!-- Waitlist Form -->
+    <form id="waitlist-form" class="space-y-4 card-bg p-6 rounded-2xl border border-pink-500 shadow-lg">
+      <input type="text" name="name" placeholder="Your Name" required class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 neon-input" />
+      <input type="email" name="email" placeholder="Your Email" required class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 neon-input" />
+      <input type="tel" name="phone" placeholder="Your Phone Number" required class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 neon-input" />
+
+      <button id="submit-button" type="submit" class="w-full bg-gradient-to-r from-pink-500 to-teal-400 text-black font-bold py-2 rounded-xl hover:scale-105 transition-transform pulse-button">
+        Join the Waitlist
+      </button>
+    </form>
+
+    <p id="success-message" class="hidden text-green-400 mt-6 font-semibold neon-text">
+      🎉 You're on the list! We'll notify you when the party starts.
+    </p>
+
+    <!-- Footer with neon links -->
+    <footer class="mt-12 text-gray-200 text-sm">
+      <a href="TermsOfService.html" class="neon-link">Terms of Service</a> | 
+      <a href="PrivacyPolicy.html" class="neon-link">Privacy Policy</a>
+      <p>© 2025 WTParty. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    const form = document.getElementById('waitlist-form');
+    const submitButton = document.getElementById('submit-button');
+    const successMessage = document.getElementById('success-message');
+    const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+
+    // --- Load saved form state on page load ---
+    window.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.add('loaded');
+      const savedData = localStorage.getItem('waitlistForm');
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        Object.keys(data).forEach(key => {
+          if (form.elements[key]) form.elements[key].value = data[key];
+        });
+      }
+    });
+
+    // --- Save form state on input ---
+    form.addEventListener('input', () => {
+      const data = {};
+      Array.from(form.elements).forEach(el => { if(el.name) data[el.name] = el.value; });
+      localStorage.setItem('waitlistForm', JSON.stringify(data));
+    });
+
+    // --- Handle form submission ---
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitButton.disabled = true;
+      submitButton.textContent = "Submitting...";
+      submitButton.classList.add('pulse');
+      successMessage.classList.add('hidden');
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+        if (response.ok) {
+          successMessage.classList.remove('hidden');
+          successMessage.textContent = "🎉 You're on the list! We'll notify you when the party s
+
+
+@keyframes neonPulseText {
+  0% { text-shadow: 0 0 5px #ff00cc, 0 0 15px #00fff2; }
+  50% { text-shadow: 0 0 15px #ff00cc, 0 0 30px #00fff2; }
+  100% { text-shadow: 0 0 5px #ff00cc, 0 0 15px #00fff2; }
+}
+
+/* Neon hover for links */
+a {
+  transition: color 0.3s, text-shadow 0.3s;
+}
+
+a:hover {
+  color: #00fff2;
+  text-shadow: 0 0 5px #00fff2, 0 0 15px #ff00cc, 0 0 25px #00fff2;
+}
+
   </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen px-6 sm:px-8 text-center">
@@ -184,6 +261,28 @@
       });
     });
   </script>
+
+  <script>
+  // Fade in on page load
+  window.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.add('loaded');
+  });
+
+  // Optional: fade out before navigating links
+  document.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (href && !href.startsWith('#')) { // ignore anchors
+        e.preventDefault();
+        document.body.classList.remove('loaded');
+        setTimeout(() => {
+          window.location.href = href;
+        }, 400); // match transition duration
+      }
+    });
+  });
+</script>
+
 </body>
 </html>
 
