@@ -73,6 +73,9 @@
       <input type="email" name="email" placeholder="Your Email" required
         class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400" />
 
+      <input type="tel" name="phone" placeholder="Your Phone Number" required 
+        class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400" />
+
       <button id="submit-button" type="submit"
         class="w-full bg-gradient-to-r from-pink-500 to-teal-400 text-black font-bold py-2 rounded-xl hover:scale-105 transition-transform">
         Join the Waitlist
@@ -138,28 +141,7 @@
 
     loadVendors();
 
-        <script>
-  // === Auto-format phone number input ===
-  const phoneInput = document.querySelector('input[name="phone"]');
 
-  phoneInput.addEventListener('input', (event) => {
-    let input = event.target.value.replace(/\D/g, ''); // remove non-digits
-
-    // Format based on length
-    if (input.length > 0) {
-      input = input.substring(0, 10); // limit to 10 digits
-      if (input.length > 6) {
-        event.target.value = `(${input.substring(0,3)}) ${input.substring(3,6)}-${input.substring(6,10)}`;
-      } else if (input.length > 3) {
-        event.target.value = `(${input.substring(0,3)}) ${input.substring(3,6)}`;
-      } else {
-        event.target.value = `(${input}`;
-      }
-    } else {
-      event.target.value = '';
-    }
-  });
-</script>
   </script>
   
 
