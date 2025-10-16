@@ -24,6 +24,7 @@
       100% { background-position: 0% 50%; }
     }
 
+    /* Neon header glow */
     .neon-pink { color: #ff00cc; }
     .glow { 
       animation: neonPulse 2.5s infinite alternate; 
@@ -33,6 +34,7 @@
       50% { text-shadow: 0 0 15px #ff00cc, 0 0 30px #00fff2, 0 0 45px #ff00cc; }
     }
 
+    /* Neon pulse button */
     .pulse {
       animation: neonPulseButton 1s infinite alternate;
     }
@@ -42,15 +44,17 @@
       100% { box-shadow: 0 0 10px #ff00cc, 0 0 20px #00fff2; }
     }
 
+    /* Card background */
     .card-bg {
       background: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(6px);
     }
 
+    /* Success message neon glow */
     #success-message {
       transition: opacity 0.5s ease;
       opacity: 0;
-       color: #00ffcc; /* Neon green/turquoise */
+      color: #00ffcc;
       text-shadow: 0 0 5px #00ffcc, 0 0 15px #00ffcc, 0 0 25px #00ffcc;
       font-weight: bold;
     }
@@ -58,12 +62,27 @@
       opacity: 1;
       animation: neonPulseSuccess 2s infinite alternate;
     }
-
     @keyframes neonPulseSuccess {
-  0% { text-shadow: 0 0 5px #00ffcc, 0 0 15px #00ffcc, 0 0 25px #00ffcc; }
-  50% { text-shadow: 0 0 15px #00ffcc, 0 0 30px #00ffcc, 0 0 45px #00ffcc; }
-  100% { text-shadow: 0 0 5px #00ffcc, 0 0 15px #00ffcc, 0 0 25px #00ffcc; }
-}
+      0% { text-shadow: 0 0 5px #00ffcc, 0 0 15px #00ffcc, 0 0 25px #00ffcc; }
+      50% { text-shadow: 0 0 15px #00ffcc, 0 0 30px #00ffcc, 0 0 45px #00ffcc; }
+      100% { text-shadow: 0 0 5px #00ffcc, 0 0 15px #00ffcc, 0 0 25px #00ffcc; }
+    }
+
+    /* Checkbox link styles */
+    label[for="consent"] {
+      color: #ffffff;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+    label[for="consent"] a {
+      color: #00ffcc;
+      text-decoration: underline;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    label[for="consent"] a:hover {
+      color: #ff00cc;
+      text-shadow: 0 0 5px #ff00cc, 0 0 15px #00ffcc, 0 0 25px #ff00cc;
+    }
   </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen px-6 sm:px-8 text-center">
@@ -77,10 +96,8 @@
     <form id="waitlist-form" class="space-y-4 card-bg p-6 rounded-2xl border border-pink-500 shadow-lg">
       <input type="text" name="name" placeholder="Your Name" required
         class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400" />
-
       <input type="email" name="email" placeholder="Your Email" required
         class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400" />
-
       <input type="tel" name="phone" placeholder="Your Phone Number" required
         class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400" />
 
@@ -89,10 +106,10 @@
         <input type="checkbox" id="consent" name="consent" required class="mt-1">
         <label for="consent" class="text-white text-sm">
           I agree to the 
-          <a href="https://yourdomain.com/privacy-policy" target="_blank" class="underline text-teal-300 hover:text-teal-400">
+          <a href="https://yourdomain.com/privacy-policy" target="_blank">
             Privacy Policy
           </a>
-          and Terms of Service. I understand that my information may be used to provide services, improve the app, and connect customers to vendors via advertising.
+          and Terms of Service. I understand that my information may be used to provide services, improve the app, and for advertising purposes.
         </label>
       </div>
 
@@ -102,7 +119,7 @@
       </button>
     </form>
 
-    <p id="success-message" class="text-green-400 mt-6 font-semibold">
+    <p id="success-message" class="mt-6 font-semibold">
       🎉 You're on the list! We'll notify you when the party starts.
     </p>
 
@@ -120,7 +137,7 @@
 
       successMessage.classList.add('hidden');
 
-      // Replace with your Apps Script Web App URL
+      // Your Apps Script Web App URL
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxdDC5CBRQ0UrISW5Qy9i68CxVDRGalypAmhAcENGlu6cbzsMLkFizpXwNWpF0GPs_9/exec";
 
       form.addEventListener('submit', async (e) => {
@@ -149,11 +166,13 @@
           } else {
             const text = await response.text();
             successMessage.classList.remove('hidden');
+            successMessage.classList.add('show');
             successMessage.textContent = "⚠️ Error submitting: " + text;
           }
 
         } catch (err) {
           successMessage.classList.remove('hidden');
+          successMessage.classList.add('show');
           successMessage.textContent = "⚠️ Network error: " + err.message;
         } finally {
           submitButton.disabled = false;
@@ -165,8 +184,6 @@
   </script>
 </body>
 </html>
-
-
 
 
 
