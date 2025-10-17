@@ -296,26 +296,6 @@ a:hover {
   </script>
 
 
-  <script>
-  // Fade in on page load
-  window.addEventListener('DOMContentLoaded', () => {
-    document.body.classList.add('loaded');
-  });
-
-  // Optional: fade out before navigating links
-  document.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', (e) => {
-      const href = link.getAttribute('href');
-      if (href && !href.startsWith('#')) { // ignore anchors
-        e.preventDefault();
-        document.body.classList.remove('loaded');
-        setTimeout(() => {
-          window.location.href = href;
-        }, 400); // match transition duration
-      }
-    });
-  });
-</script>
 
 </body>
 </html>
