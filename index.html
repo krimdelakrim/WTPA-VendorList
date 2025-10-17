@@ -77,7 +77,9 @@
         class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 neon-input" />
       <input type="tel" name="phone" placeholder="Your Phone Number" required
         class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 neon-input" />
-
+        <input type="text" name="city" placeholder="Your City" required
+        class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 neon-input" />
+      
       <!-- Clickwrap Checkbox -->
       <div class="flex items-start space-x-2 text-left text-sm">
         <input type="checkbox" id="consent" name="consent" required class="mt-1 accent-pink-500">
@@ -109,7 +111,7 @@ const form = document.getElementById('waitlist-form');
 const submitButton = document.getElementById('submit-button');
 const successMessage = document.getElementById('success-message');
 const consentCheckbox = document.getElementById('consent');
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz5zT53knbzgBQY7czIv3m4hj_zXGosg6uJmdNOUetaBhlF_QvR1yRhGg7yqf2ReatV/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBE6BoaF5Dyjsex83EYpjAPkFi-F-o-l0eTXEE2hjfdqKmXwPH0bLMM22AZklJR8WN/exec";
 
 // --- SESSION-BASED STORAGE ---
 // We'll use both localStorage (for back navigation) and sessionStorage (for true refresh detection).
