@@ -89,6 +89,12 @@
           I understand that my information may be used to provide services, improve the app, and for advertising purposes.
         </label>
       </div>
+<div class="mt-4 text-sm text-white">
+  <label>
+    <input type="checkbox" id="preserve-data" checked class="mr-2">
+    Keep my information if I refresh the page
+  </label>
+</div>
 
       <button id="submit-button" type="submit"
         class="w-full bg-gradient-to-r from-pink-500 to-teal-400 text-black font-bold py-2 rounded-xl hover:scale-105 transition-transform pulse-button">
@@ -222,7 +228,33 @@ document.addEventListener('visibilitychange', () => {
 });
 </script>
 
-  </script>
+  const preserveCheckbox = document.getElementById('preserve-data');
+
+// Save the preference in localStorage
+preserveCheckbox.addEventListener('change', () => {
+  localStorage.setItem('preserveFormData', preserveCheckbox.checked ? 'true' : 'false');
+});
+
+// Restore the preference on page load
+window.addEventListener('DOMContentLoaded', () => {
+  const preserve = localStorage.getItem('preserveFormData');
+  if (preserve !== null) {
+    preserveCheckbox.checked = preserve === 'true';
+  }
+});
+
+// When form changes, only save if toggle is checked
+form.addEventListener('input', () => {
+  if (preserveCheckbox.checked) {
+    const data = {};
+    Array.from(form.elements).forEach(el => { if (el.name) data[el.name] = el.value; });
+    localStorage.setItem('waitlistForm', JSON.stringify(data));
+  } else {
+    localStorage.removeItem('waitlistForm');
+  }
+});
+
+
 </body>
 </html>
 
