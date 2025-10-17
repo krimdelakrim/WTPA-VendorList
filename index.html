@@ -208,77 +208,93 @@ a:hover {
     </footer>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('waitlist-form');
-      const submitButton = document.getElementById('submit-button');
-      const successMessage = document.getElementById('success-message');
-      const consentCheckbox = document.getElementById('consent');
+    <script>
+    const form = document.getElementById('waitlist-form');
+    const submitButton = document.getElementById('submit-button');
+    const successMessage = document.getElementById('success-message');
+    const consentCheckbox = document.getElementById('consent');
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxdDC5CBRQ0UrISW5Qy9i68CxVDRGalypAmhAcENGlu6cbzsMLkFizpXwNWpF0GPs_9/exec";
 
+    // --- Load saved form state ---
+    window.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.add('loaded');
+      const savedData = localStorage.getItem('waitlistForm');
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        Object.keys(data).forEach(key => {
+          if (form.elements[key]) form.elements[key].value = data[key];
+        });
+      }
+    });
+
+    // --- Save form state ---
+    form.addEventListener('input', () => {
+      const data = {};
+      Array.from(form.elements).forEach(el => { if(el.name) data[el.name] = el.value; });
+      localStorage.setItem('waitlistForm', JSON.stringify(data));
+    });
+
+    // --- Handle form submission ---
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (!consentCheckbox.checked) {
+        alert("You must agree to the Privacy Policy and Terms of Service to continue.");
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = "Submitting...";
+      submitButton.classList.add('pulse');
       successMessage.classList.add('hidden');
 
-      // Your Apps Script Web App URL
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxdDC5CBRQ0UrISW5Qy9i68CxVDRGalypAmhAcENGlu6cbzsMLkFizpXwNWpF0GPs_9/exec";
-/// LocalStorage form preservation
-      window.addEventListener('DOMContentLoaded', () => {
-  document.body.classList.add('loaded');
-  const savedData = localStorage.getItem('waitlistForm');
-  if (savedData) {
-    const data = JSON.parse(savedData);
-    Object.keys(data).forEach(key => {
-      if (form.elements[key]) form.elements[key].value = data[key];
-    });
-  }
-});
+      const formData = new FormData(form);
 
-form.addEventListener('input', () => {
-  const data = {};
-  Array.from(form.elements).forEach(el => { if(el.name) data[el.name] = el.value; });
-  localStorage.setItem('waitlistForm', JSON.stringify(data));
-});
+      try {
+        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
 
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        if (!consentCheckbox.checked) {
-          alert("You must agree to the Privacy Policy and Terms of Service to continue.");
-          return;
-        }
-
-        submitButton.disabled = true;
-        submitButton.textContent = "Submitting...";
-        submitButton.classList.add('pulse');
-        successMessage.classList.add('hidden');
-
-        const formData = new FormData(form);
-
-        try {
-          const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-
-          if (response.ok) {
-            successMessage.classList.remove('hidden');
-            successMessage.classList.add('show');
-            successMessage.textContent = "🎉 You're on the list! We'll notify you when the party starts.";
-            form.reset();
-          } else {
-            const text = await response.text();
-            successMessage.classList.remove('hidden');
-            successMessage.classList.add('show');
-            successMessage.textContent = "⚠️ Error submitting: " + text;
-          }
-
-        } catch (err) {
+        if (response.ok) {
           successMessage.classList.remove('hidden');
-          successMessage.classList.add('show');
-          successMessage.textContent = "⚠️ Network error: " + err.message;
-        } finally {
-          submitButton.disabled = false;
-          submitButton.textContent = "Join the Waitlist";
-          submitButton.classList.remove('pulse');
+          successMessage.textContent = "🎉 You're on the list! We'll notify you when the party starts.";
+          form.reset();
+          localStorage.removeItem('waitlistForm');
+        } else {
+          const text = await response.text();
+          successMessage.classList.remove('hidden');
+          successMessage.textContent = "⚠️ Error submitting: " + text;
         }
-      });
+
+      } catch (err) {
+        successMessage.classList.remove('hidden');
+        successMessage.textContent = "⚠️ Network error: " + err.message;
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = "Join the Waitlist";
+        submitButton.classList.remove('pulse');
+      }
     });
   </script>
+
+  <script>
+  // Fade-in on load / Fade-out on link navigation
+  window.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.add('loaded');
+  });
+
+  document.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (href && !href.startsWith('#')) {
+        e.preventDefault();
+        document.body.classList.remove('loaded');
+        setTimeout(() => {
+          window.location.href = href;
+        }, 400);
+      }
+    });
+  });
+  </script>
+
 
   <script>
   // Fade in on page load
