@@ -186,23 +186,42 @@ form.addEventListener('submit', async (e) => {
 
 
   <!-- Fade transitions for navigation -->
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      document.body.classList.add('loaded');
-    });
+ <script>
+window.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('loaded');
+});
 
-    document.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', (e) => {
-        const href = link.getAttribute('href');
-        if (href && !href.startsWith('#')) {
-          e.preventDefault();
-          document.body.classList.remove('loaded');
-          setTimeout(() => {
-            window.location.href = href;
-          }, 400);
-        }
-      });
-    });
+// Handle smooth fade-out for internal links
+document.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', (e) => {
+    const href = link.getAttribute('href');
+    if (href && !href.startsWith('#')) {
+      e.preventDefault();
+      document.body.classList.remove('loaded');
+      // Navigate after a short fade delay
+      setTimeout(() => {
+        window.location.href = href;
+      }, 250); // slightly faster fade for snappier feel
+    }
+  });
+});
+
+// Instantly show content when user navigates back
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    // Page loaded from cache (like a back button)
+    document.body.classList.add('loaded');
+  }
+});
+
+// Fallback for some browsers (Safari/iOS)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    document.body.classList.add('loaded');
+  }
+});
+</script>
+
   </script>
 </body>
 </html>
