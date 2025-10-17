@@ -44,7 +44,7 @@
     <p class="text-sm sm:text-base text-gray-400 mb-8">
       Discover trending events and parties near you in real time — perfect for users and businesses.
     </p>
-
+<div id="page-content">
     <!-- Waitlist Form -->
     <form id="waitlist-form"
       action="https://script.google.com/macros/s/AKfycbxC5mnwUr0LqbUS_9lF9FpLbt_s_ZYY8alD42SZs3duWqBe4R9n47sbGWyRtnRHpBPH/exec"
@@ -137,6 +137,42 @@
 
     loadVendors();
   </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const pageContent = document.getElementById("page-content");
+
+  // Handle soft navigation
+  document.querySelectorAll("a[data-page]").forEach(link => {
+    link.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const url = link.getAttribute("href");
+      history.pushState({ page: url }, "", url);
+
+      await loadPage(url);
+    });
+  });
+
+  async function loadPage(url) {
+    try {
+      const response = await fetch(url);
+      const html = await response.text();
+      pageContent.innerHTML = html;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      pageContent.innerHTML = "<p class='text-red-400'>⚠️ Failed to load page.</p>";
+    }
+  }
+
+  // Handle Back/Forward buttons
+  window.addEventListener("popstate", async (e) => {
+    if (e.state?.page) await loadPage(e.state.page);
+    else window.location.href = "index.html";
+  });
+});
+</script>
+
+    
   <script>
   // When the page is shown (including when user clicks Back),
   // if it was restored from bfcache, reload so scripts re-run
@@ -149,6 +185,7 @@
 
 </body>
 </html>
+
 
 
 
