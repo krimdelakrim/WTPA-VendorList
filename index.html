@@ -108,73 +108,82 @@
   </div>
 
   <!-- === JavaScript === -->
-  <script>
-    const form = document.getElementById('waitlist-form');
-    const submitButton = document.getElementById('submit-button');
-    const successMessage = document.getElementById('success-message');
-    const consentCheckbox = document.getElementById('consent');
+ <script>
+const form = document.getElementById('waitlist-form');
+const submitButton = document.getElementById('submit-button');
+const successMessage = document.getElementById('success-message');
+const consentCheckbox = document.getElementById('consent');
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz5zT53knbzgBQY7czIv3m4hj_zXGosg6uJmdNOUetaBhlF_QvR1yRhGg7yqf2ReatV/exec";
 
-    // Replace with your actual Google Apps Script URL
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz5zT53knbzgBQY7czIv3m4hj_zXGosg6uJmdNOUetaBhlF_QvR1yRhGg7yqf2ReatV/exec";
+// --- SESSION-BASED STORAGE ---
+// We'll use both localStorage (for back navigation) and sessionStorage (for true refresh detection).
+if (!sessionStorage.getItem('activeSession')) {
+  // New session started — clear stored form data
+  localStorage.removeItem('waitlistForm');
+  sessionStorage.setItem('activeSession', 'true');
+}
 
-    // --- Restore saved form state ---
-    window.addEventListener('DOMContentLoaded', () => {
-      document.body.classList.add('loaded');
-      const savedData = localStorage.getItem('waitlistForm');
-      if (savedData) {
-        const data = JSON.parse(savedData);
-        Object.keys(data).forEach(key => {
-          if (form.elements[key]) form.elements[key].value = data[key];
-        });
-      }
+// --- Restore saved form state ---
+window.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('loaded');
+  const savedData = localStorage.getItem('waitlistForm');
+  if (savedData) {
+    const data = JSON.parse(savedData);
+    Object.keys(data).forEach(key => {
+      if (form.elements[key]) form.elements[key].value = data[key];
     });
+  }
+});
 
-    // --- Save form state on input ---
-    form.addEventListener('input', () => {
-      const data = {};
-      Array.from(form.elements).forEach(el => { if (el.name) data[el.name] = el.value; });
-      localStorage.setItem('waitlistForm', JSON.stringify(data));
-    });
+// --- Save form state on input ---
+form.addEventListener('input', () => {
+  const data = {};
+  Array.from(form.elements).forEach(el => {
+    if (el.name) data[el.name] = el.value;
+  });
+  localStorage.setItem('waitlistForm', JSON.stringify(data));
+});
 
-    // --- Form submission ---
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+// --- Handle form submission ---
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-      if (!consentCheckbox.checked) {
-        alert("You must agree to the Privacy Policy and Terms of Service to continue.");
-        return;
-      }
+  if (!consentCheckbox.checked) {
+    alert("You must agree to the Privacy Policy and Terms of Service to continue.");
+    return;
+  }
 
-      submitButton.disabled = true;
-      submitButton.textContent = "Submitting...";
-      submitButton.classList.add('pulse');
-      successMessage.classList.add('hidden');
+  submitButton.disabled = true;
+  submitButton.textContent = "Submitting...";
+  submitButton.classList.add('pulse');
+  successMessage.classList.add('hidden');
 
-      const formData = new FormData(form);
+  const formData = new FormData(form);
 
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+  try {
+    const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
 
-        if (response.ok) {
-          successMessage.classList.remove('hidden');
-          successMessage.textContent = "🎉 You're on the list! We'll notify you when the party starts.";
-          form.reset();
-          localStorage.removeItem('waitlistForm');
-        } else {
-          const text = await response.text();
-          successMessage.classList.remove('hidden');
-          successMessage.textContent = "⚠️ Error submitting: " + text;
-        }
-      } catch (err) {
-        successMessage.classList.remove('hidden');
-        successMessage.textContent = "⚠️ Network error: " + err.message;
-      } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = "Join the Waitlist";
-        submitButton.classList.remove('pulse');
-      }
-    });
-  </script>
+    if (response.ok) {
+      successMessage.classList.remove('hidden');
+      successMessage.textContent = "🎉 You're on the list! We'll notify you when the party starts.";
+      form.reset();
+      localStorage.removeItem('waitlistForm');
+    } else {
+      const text = await response.text();
+      successMessage.classList.remove('hidden');
+      successMessage.textContent = "⚠️ Error submitting: " + text;
+    }
+  } catch (err) {
+    successMessage.classList.remove('hidden');
+    successMessage.textContent = "⚠️ Network error: " + err.message;
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = "Join the Waitlist";
+    submitButton.classList.remove('pulse');
+  }
+});
+</script>
+
 
   <!-- Fade transitions for navigation -->
   <script>
