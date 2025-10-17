@@ -19,7 +19,6 @@
       opacity: 0;
       transition: opacity 0.4s ease;
     }
-
     body.loaded { opacity: 1; }
 
     @keyframes pulseBackground {
@@ -28,12 +27,10 @@
       100% { background-position: 0% 50%; }
     }
 
-    /* Neon glow for text and inputs */
     .neon-text {
       text-shadow: 0 0 5px #00fff2, 0 0 10px #ff00cc;
       transition: text-shadow 0.3s;
     }
-
     .neon-input:focus {
       box-shadow: 0 0 8px #ff00cc, 0 0 16px #00fff2;
       border-color: #ff00cc;
@@ -41,30 +38,23 @@
       transition: box-shadow 0.3s, border-color 0.3s;
     }
 
-    /* Neon pulsing button */
     @keyframes pulseButton {
       0% { box-shadow: 0 0 8px #ff00cc, 0 0 16px #00fff2; }
       50% { box-shadow: 0 0 16px #ff00cc, 0 0 32px #00fff2; }
       100% { box-shadow: 0 0 8px #ff00cc, 0 0 16px #00fff2; }
     }
+    .pulse-button.pulse { animation: pulseButton 1.2s infinite alternate; }
 
-    .pulse-button.pulse {
-      animation: pulseButton 1.2s infinite alternate;
-    }
-
-    /* Neon link glow */
     .neon-link {
       color: #00fff2;
       text-decoration: none;
       transition: color 0.3s, text-shadow 0.3s;
     }
-
     .neon-link:hover {
       color: #ff00cc;
       text-shadow: 0 0 5px #ff00cc, 0 0 10px #00fff2;
     }
 
-    /* Soft translucent card background */
     .card-bg {
       background: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(6px);
@@ -81,11 +71,27 @@
 
     <!-- Waitlist Form -->
     <form id="waitlist-form" class="space-y-4 card-bg p-6 rounded-2xl border border-pink-500 shadow-lg">
-      <input type="text" name="name" placeholder="Your Name" required class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 neon-input" />
-      <input type="email" name="email" placeholder="Your Email" required class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 neon-input" />
-      <input type="tel" name="phone" placeholder="Your Phone Number" required class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 neon-input" />
+      <input type="text" name="name" placeholder="Your Name" required
+        class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 neon-input" />
+      <input type="email" name="email" placeholder="Your Email" required
+        class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 neon-input" />
+      <input type="tel" name="phone" placeholder="Your Phone Number" required
+        class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 neon-input" />
 
-      <button id="submit-button" type="submit" class="w-full bg-gradient-to-r from-pink-500 to-teal-400 text-black font-bold py-2 rounded-xl hover:scale-105 transition-transform pulse-button">
+      <!-- Clickwrap Checkbox -->
+      <div class="flex items-start space-x-2 text-left text-sm">
+        <input type="checkbox" id="consent" name="consent" required class="mt-1 accent-pink-500">
+        <label for="consent" class="text-white">
+          I agree to the
+          <a href="TermsOfService.html" class="neon-link">Terms of Service</a>
+          and
+          <a href="PrivacyPolicy.html" class="neon-link">Privacy Policy</a>.
+          I understand that my information may be used to provide services, improve the app, and for advertising purposes.
+        </label>
+      </div>
+
+      <button id="submit-button" type="submit"
+        class="w-full bg-gradient-to-r from-pink-500 to-teal-400 text-black font-bold py-2 rounded-xl hover:scale-105 transition-transform pulse-button">
         Join the Waitlist
       </button>
     </form>
@@ -94,211 +100,22 @@
       🎉 You're on the list! We'll notify you when the party starts.
     </p>
 
-    <!-- Footer with neon links -->
     <footer class="mt-12 text-gray-200 text-sm">
-      <a href="terms-of-service.html" class="neon-link">Terms of Service</a> | 
-      <a href="privacy-policy.html" class="neon-link">Privacy Policy</a>
+      <a href="TermsOfService.html" class="neon-link">Terms of Service</a> |
+      <a href="PrivacyPolicy.html" class="neon-link">Privacy Policy</a>
       <p>© 2025 WTParty. All rights reserved.</p>
     </footer>
   </div>
 
+  <!-- === JavaScript === -->
   <script>
-    const form = document.getElementById('waitlist-form');
-    const submitButton = document.getElementById('submit-button');
-    const successMessage = document.getElementById('success-message');
-    const SCRIPT_URL = "https://script.google.com/macros/s/1dpkMYKfRDe3rqxUDtvVa07ZmYHFj2ftGlCb9aErc7Kc/exec";
-
-    // --- Load saved form state on page load ---
-    window.addEventListener('DOMContentLoaded', () => {
-      document.body.classList.add('loaded');
-      const savedData = localStorage.getItem('waitlistForm');
-      if (savedData) {
-        const data = JSON.parse(savedData);
-        Object.keys(data).forEach(key => {
-          if (form.elements[key]) form.elements[key].value = data[key];
-        });
-      }
-    });
-
-    // --- Save form state on input ---
-    form.addEventListener('input', () => {
-      const data = {};
-      Array.from(form.elements).forEach(el => { if(el.name) data[el.name] = el.value; });
-      localStorage.setItem('waitlistForm', JSON.stringify(data));
-    });
-
-    // --- Handle form submission ---
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      submitButton.disabled = true;
-      submitButton.textContent = "Submitting...";
-      submitButton.classList.add('pulse');
-      successMessage.classList.add('hidden');
-
-      const formData = new FormData(form);
-
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        if (response.ok) {
-          successMessage.classList.remove('hidden');
-          successMessage.textContent = "🎉 You're on the list! We'll notify you when the party's
-
-
-@keyframes neonPulseText {
-  0% { text-shadow: 0 0 5px #ff00cc, 0 0 15px #00fff2; }
-  50% { text-shadow: 0 0 15px #ff00cc, 0 0 30px #00fff2; }
-  100% { text-shadow: 0 0 5px #ff00cc, 0 0 15px #00fff2; }
-}
-
-/* Neon hover for links */
-a {
-  transition: color 0.3s, text-shadow 0.3s;
-}
-
-a:hover {
-  color: #00fff2;
-  text-shadow: 0 0 5px #00fff2, 0 0 15px #ff00cc, 0 0 25px #00fff2;
-}
-
-  </style>
-</head>
-<body class="flex flex-col items-center justify-center min-h-screen px-6 sm:px-8 text-center">
-  <div class="max-w-md w-full">
-    <h1 class="text-4xl sm:text-5xl font-bold mb-4 glow neon-pink">WTParty Vendor Waitlist</h1>
-    <p class="text-lg mb-4 italic font-semibold text-black bg-white/60 px-3 py-1 rounded-xl shadow-md">
-      Where vendors meet the crowd — and the crowd meets the vibe.
-    </p>
-
-    <!-- Waitlist Form -->
-    <form id="waitlist-form" class="space-y-4 card-bg p-6 rounded-2xl border border-pink-500 shadow-lg">
-      <input type="text" name="name" placeholder="Your Name" required
-        class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400" />
-      <input type="email" name="email" placeholder="Your Email" required
-        class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400" />
-      <input type="tel" name="phone" placeholder="Your Phone Number" required
-        class="w-full px-4 py-2 bg-transparent border border-pink-500 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400" />
-
-      <!-- Clickwrap Checkbox -->
-      <div class="flex items-start space-x-2 text-left">
-        <input type="checkbox" id="consent" name="consent" required class="mt-1">
-        <label for="consent" class="text-white text-sm">
-          I agree to the 
-          <a href="privacy-policy.html" >
-            Privacy Policy
-          </a>
-          and <a href="terms-of-service.html" >
-            Terms of Service
-          </a>. I understand that my information may be used to provide services, improve the app, and for advertising purposes.
-        </label>
-      </div>
-
-      <button id="submit-button" type="submit"
-        class="w-full bg-gradient-to-r from-pink-500 to-teal-400 text-black font-bold py-2 rounded-xl hover:scale-105 transition-transform">
-        Join the Waitlist
-      </button>
-    </form>
-
-    <p id="success-message" class="hidden text-green-400 mt-6 font-semibold neon-text">
-  🎉 You're on the list! We'll notify you when the party starts.
-</p>
-
-
-    <footer class="mt-12 text-gray-200 text-sm">
-      © 2025 WTParty. All rights reserved.
-    </footer>
-  </div>
-
-    <script>
     const form = document.getElementById('waitlist-form');
     const submitButton = document.getElementById('submit-button');
     const successMessage = document.getElementById('success-message');
     const consentCheckbox = document.getElementById('consent');
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxdDC5CBRQ0UrISW5Qy9i68CxVDRGalypAmhAcENGlu6cbzsMLkFizpXwNWpF0GPs_9/exec";
 
-    // --- Load saved form state ---
-    window.addEventListener('DOMContentLoaded', () => {
-      document.body.classList.add('loaded');
-      const savedData = localStorage.getItem('waitlistForm');
-      if (savedData) {
-        const data = JSON.parse(savedData);
-        Object.keys(data).forEach(key => {
-          if (form.elements[key]) form.elements[key].value = data[key];
-        });
-      }
-    });
+    // Replace with y
 
-    // --- Save form state ---
-    form.addEventListener('input', () => {
-      const data = {};
-      Array.from(form.elements).forEach(el => { if(el.name) data[el.name] = el.value; });
-      localStorage.setItem('waitlistForm', JSON.stringify(data));
-    });
-
-    // --- Handle form submission ---
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      if (!consentCheckbox.checked) {
-        alert("You must agree to the Privacy Policy and Terms of Service to continue.");
-        return;
-      }
-
-      submitButton.disabled = true;
-      submitButton.textContent = "Submitting...";
-      submitButton.classList.add('pulse');
-      successMessage.classList.add('hidden');
-
-      const formData = new FormData(form);
-
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-
-        if (response.ok) {
-          successMessage.classList.remove('hidden');
-          successMessage.textContent = "🎉 You're on the list! We'll notify you when the party starts.";
-          form.reset();
-          localStorage.removeItem('waitlistForm');
-        } else {
-          const text = await response.text();
-          successMessage.classList.remove('hidden');
-          successMessage.textContent = "⚠️ Error submitting: " + text;
-        }
-
-      } catch (err) {
-        successMessage.classList.remove('hidden');
-        successMessage.textContent = "⚠️ Network error: " + err.message;
-      } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = "Join the Waitlist";
-        submitButton.classList.remove('pulse');
-      }
-    });
-  </script>
-
-  <script>
-  // Fade-in on load / Fade-out on link navigation
-  window.addEventListener('DOMContentLoaded', () => {
-    document.body.classList.add('loaded');
-  });
-
-  document.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', (e) => {
-      const href = link.getAttribute('href');
-      if (href && !href.startsWith('#')) {
-        e.preventDefault();
-        document.body.classList.remove('loaded');
-        setTimeout(() => {
-          window.location.href = href;
-        }, 400);
-      }
-    });
-  });
-  </script>
-
-
-
-</body>
-</html>
 
 
 
